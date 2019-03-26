@@ -17,6 +17,7 @@ def nearest_point(P, Q):
                 minDis = tmp
                 index[i] = j
         dis[i] = minDis
+    # print("index", index)
     return dis, index
 
 def find_optimal_transform(P, Q):
@@ -24,6 +25,8 @@ def find_optimal_transform(P, Q):
     meanQ = np.mean(Q, axis = 0)
     P_ = P - meanP
     Q_ = Q - meanQ
+
+    # print("p q", P.shape, Q.shape)
 
     W = np.dot(Q_.T, P_)
     U, S, VT = np.linalg.svd(W)
@@ -57,7 +60,7 @@ def icp(src, dst, maxIteration=50, tolerance=0.001, controlPoints=100):
             Q = B
 
     for i in range(maxIteration):
-        # print("Iteration : " + str(i) + " with Err : " + str(lastErr))
+        print("Iteration : " + str(i) + " with Err : " + str(lastErr))
         dis, index = nearest_point(P, Q)
         R, T = find_optimal_transform(P, Q[index,:])
         A = np.dot(R, A.T).T + np.array([T for j in range(A.shape[0])])
