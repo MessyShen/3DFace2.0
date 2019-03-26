@@ -1,0 +1,9 @@
+*.wrl
+*.xyz
+*.bnd
+*.fc
+dictionary.txt
+/tempData/
+/BU3D/
+/.vscode/
+
