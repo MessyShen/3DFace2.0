@@ -44,13 +44,14 @@ def FetchAllData(TrainDataPath) :
     # print(X)
     return X
 
-def FetchBU3DData(DataPath, facePointMult3=21081, fileCnt=1000, printTime=False, valCnt=10,
+def FetchBU3DData(DataPath, facePointMult3=21081, fileCnt=1000, printTime=False, valCnt=400,
                   trainDirName="train_Resampled", testDirName="val_Resampled", landmarkDirName="landmarks") :
     startTime = time.time()
     if printTime:
         print("Loading Data...")
     X = np.zeros((fileCnt, facePointMult3 + 83*3))
-    Y = np.zeros((valCnt, facePointMult3 + 83*3))
+    Y  = np.zeros((valCnt, facePointMult3 + 83*3))
+    Y_ = np.zeros((valCnt, facePointMult3 + 83*3))
     cnt = 0
     trainDataPath = os.path.join(DataPath, trainDirName)
     testDataPath  = os.path.join(DataPath, testDirName)
@@ -76,13 +77,16 @@ def FetchBU3DData(DataPath, facePointMult3=21081, fileCnt=1000, printTime=False,
                 bndFile = f[:-3] + 'bnd'
                 xyzData = dataio.loadData(os.path.join(testDataPath, f))
                 bndData = np.zeros((83, 3))
+                bndTruth= dataio.loadData(os.path.join(landmarkPath, bndFile))
                 F = combineData(xyzData, bndData)
-                Y[cnt, :] = F.ravel()
+                F_GT = combineData(xyzData, bndTruth)
+                Y_[cnt, :] = F.ravel()
+                Y[cnt, :]  = F_GT.ravel()
                 cnt += 1
     print("Data loaded.\nTrain Shape:", X.shape, " | Test Shape:", Y.shape)
     if printTime:
         print("Cost {} seconds.".format(time.time() - startTime))
-    return X, Y
+    return X, Y_, Y #Train, toLearn, GT
 
 def FetchXYZData(TestDataPath) :
     curPath = os.getcwd()

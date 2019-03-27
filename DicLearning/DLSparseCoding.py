@@ -76,7 +76,7 @@ Rec *= 500
 output = scaler.inverse_transform(Rec)
 
 #write code to file
-outCode = open("newcode.txt", "w")
+outCode = open("code.txt", "w")
 for i in code:
     for j in i :
         outCode.write(str(j) + ' ')
@@ -85,7 +85,7 @@ outCode.close()
 
 
 for i in range(testData.shape[0]):
-    fileName = "tempData/facenew"+str(i)+".xyz"
+    fileName = "tempData/face"+str(i)+".xyz"
     dataio.outPutFace(fileName, output[i, :])
 # for i in range(test.shape[0]):
     # code = dico.transform(test)
