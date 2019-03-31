@@ -8,6 +8,7 @@ sys.path.append(BASE_DIR)
 # This is a file from PointNet
 
 # Download dataset for point cloud classification
+'''
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 if not os.path.exists(DATA_DIR):
     os.mkdir(DATA_DIR)
@@ -17,7 +18,7 @@ if not os.path.exists(os.path.join(DATA_DIR, 'modelnet40_ply_hdf5_2048')):
     os.system('wget %s; unzip %s' % (www, zipfile))
     os.system('mv %s %s' % (zipfile[:-4], DATA_DIR))
     os.system('rm %s' % (zipfile))
-
+'''
 
 def shuffle_data(data, labels):
     """ Shuffle data and labels.
@@ -52,6 +53,33 @@ def rotate_point_cloud(batch_data):
         rotated_data[k, ...] = np.dot(shape_pc.reshape((-1, 3)), rotation_matrix)
     return rotated_data
 
+def rotate_point_cloud_xyz(batch_data, max_range=2*np.pi):
+    """ Randomly rotate the point clouds to augument the dataset
+        rotation is per shape based along up direction
+        Input:
+          BxNx3 array, original batch of point clouds
+        Return:
+          BxNx3 array, rotated batch of point clouds
+    """
+    rotated_data = np.zeros(batch_data.shape, dtype=np.float32)
+    # for k in range(batch_data.shape[0]):
+    rotation_angles = [(np.random.uniform() * max_range - max_range) for _ in range(3)]
+    cosval = [np.cos(theta) for theta in rotation_angles]
+    sinval = [np.sin(theta) for theta in rotation_angles]
+    rotation_matrix_x = np.array([[0, 1, 0],
+                                [-sinval[0], 0, cosval[0]],
+                                [cosval[0], 0, sinval[0]]])
+    rotation_matrix_y = np.array([[cosval[1], 0, sinval[1]],
+                                [0, 1, 0],
+                                [-sinval[1], 0, cosval[1]]])
+    rotation_matrix_z = np.array([[-sinval[2], 0, cosval[2]],
+                                [cosval[2], 0, sinval[2]],
+                                [0, 1, 0]])
+    print(rotation_matrix_x)
+    rotation_matrix = np.dot(np.dot(rotation_matrix_x, rotation_matrix_y), rotation_matrix_z)
+    shape_pc = batch_data
+    rotated_data = np.dot(shape_pc.reshape((-1, 3)), rotation_matrix)
+    return rotated_data
 
 def rotate_point_cloud_by_angle(batch_data, rotation_angle):
     """ Rotate the point cloud along up direction with certain angle.

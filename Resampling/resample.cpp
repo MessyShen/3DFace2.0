@@ -128,12 +128,13 @@ int main() {
         string s = PATH + "/" + ptr->d_name;
         if (s[s.length()-1] == 'z') {
             string tmp = ptr->d_name;
-            if (tmp > "M0015_SA03WH_F3D.xyz") {
+            //if (tmp > "M0015_SA03WH_F3D.xyz") {
             files.push_back(s);
-            cout << ptr->d_name << endl;
-            }
+            //cout << ptr->d_name << endl;
+            //}
         }
     }
+    //M0024_SU04AE_F3D
     
     string fcReferPt = "faceReference.xyz";
     printf("In Total %lu Faces\n", files.size());

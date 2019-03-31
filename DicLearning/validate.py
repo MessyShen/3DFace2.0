@@ -18,7 +18,7 @@ from readin import FetchAllData, FetchXYZData, FetchBU3DData
 import dataio
 
 # data = FetchAllData("TrainingSet")
-data, val, valGT = FetchBU3DData("BU3D", printTime=True, valCnt=40)
+data, val, valGT = FetchBU3DData("BU3D", printTime=True, valCnt=200)
 # print("dataShape", data.shape)
 scaler = preprocessing.StandardScaler().fit(data)
 data = scaler.transform(data)
